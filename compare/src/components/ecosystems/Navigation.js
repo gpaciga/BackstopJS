@@ -1,10 +1,17 @@
 // requires react-simple-tree-menu
 
 import React from 'react';
-// import styled from 'styled-components';
+import styled from 'styled-components';
 import { connect } from 'react-redux';
 // import { TreeMenu } from 'react-simple-tree-menu';
 import { navigateTests } from '../../actions';
+import NavigationCard from '../organisms/NavigationCard';
+
+const NavWrapper = styled.nav`
+  width: 100%;
+  padding: 10px 30px;
+  box-sizing: border-box;
+`;
 
 class Navigation extends React.Component {
   render () {
@@ -79,7 +86,7 @@ class Navigation extends React.Component {
       };
     };
 
-    const treeData = labels.reduce((tree, label) => {
+    let treeData = labels.reduce((tree, label) => {
       const parts = label.split('/');
       // console.log(parts);
 
@@ -104,16 +111,24 @@ class Navigation extends React.Component {
     }, {});
     // console.log("treeData=", treeData);
 
-    const buttonFor = node => {
-      return (
-        <button
-          key={node.path}
-          onClick={() => this.props.navigateTo(node.path)}
-        >
-          {node.label} ({node.stats.pass} pass/{node.stats.fail} fail/{node.stats.total} total)
-        </button>
-      );
+    const buttonFor = (node, depth) => {
+      return <NavigationCard
+        key={node.path}
+        node={node}
+        navigateTo={this.props.navigateTo}
+        depth={depth}
+      />;
+      // return (
+      //   <button
+      //     key={node.path}
+      //     onClick={() => this.props.navigateTo(node.path)}
+      //   >
+      //     {node.label} ({node.stats.pass} pass/{node.stats.fail} fail/{node.stats.total} total)
+      //   </button>
+      // );
     };
+
+    let depth = 0;
 
     let breadcrumbs = [];
     // dive into the tree to get the first split
@@ -121,25 +136,22 @@ class Navigation extends React.Component {
     while (Object.keys(currentNode).length === 1) {
       const key = Object.keys(currentNode)[0];
       const node = currentNode[key];
-      breadcrumbs.push(buttonFor(node));
+      breadcrumbs.push(buttonFor(node, depth));
       currentNode = node.nodes;
+      depth++;
     }
 
     const subLabels = [];
     for (const key in currentNode) {
       const node = currentNode[key];
       // console.log("parsing", node);
-      subLabels.push(
-        <li key={node.path}>
-          {buttonFor(node)}
-        </li>
-      );
+      subLabels.push(buttonFor(node, depth));
     }
     return (
-      <div>
-        <ul>{breadcrumbs}</ul>
-        <ul>{subLabels}</ul>
-      </div>
+      <NavWrapper>
+        {breadcrumbs}
+        {subLabels}
+      </NavWrapper>
     );
   }
 }
