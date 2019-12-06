@@ -12,6 +12,13 @@ export const findTests = value => {
   };
 };
 
+export const navigateTests = path => {
+  return {
+    type: 'NAVIGATE_TESTS',
+    path
+  };
+};
+
 export const updateSettings = id => {
   return {
     type: 'UPDATE_SETTINGS',

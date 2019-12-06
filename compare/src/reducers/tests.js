@@ -42,6 +42,15 @@ const tests = (state = {}, action) => {
       }
       return state;
 
+    // this won't play well with other filters
+    case 'NAVIGATE_TESTS':
+      if (action.path.length > 0) {
+        return Object.assign({}, state, {
+          filtered: state.all.filter(e => e.pair.label.indexOf(action.path) === 0)
+        });
+      }
+      return state;
+
     default:
       return state;
   }

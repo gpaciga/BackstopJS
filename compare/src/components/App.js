@@ -5,6 +5,7 @@ import styled from 'styled-components';
 import { StickyContainer } from 'react-sticky';
 
 import Header from './ecosystems/Header';
+import Navigation from './ecosystems/Navigation';
 import List from './ecosystems/List';
 import ScrubberModal from './ecosystems/ScrubberModal';
 
@@ -17,6 +18,7 @@ export default class App extends React.Component {
     return (
       <StickyContainer>
         <Header />
+        <Navigation />
         <Wrapper>
           <List />
         </Wrapper>
