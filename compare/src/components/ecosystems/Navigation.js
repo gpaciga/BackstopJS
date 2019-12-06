@@ -3,7 +3,6 @@
 import React from 'react';
 import styled from 'styled-components';
 import { connect } from 'react-redux';
-// import { TreeMenu } from 'react-simple-tree-menu';
 import { navigateTests } from '../../actions';
 import NavigationCard from '../organisms/NavigationCard';
 
@@ -16,55 +15,6 @@ const NavWrapper = styled.nav`
 class Navigation extends React.Component {
   render () {
     const labels = this.props.tests.map(test => test.pair.label);
-
-    /* TreeMenu does not work
-    // convert into an object
-    const treeData = labels.reduce((tree, label) => {
-        const parts = label.split("/");
-        console.log(parts);
-
-        let current_node = tree;
-        parts.forEach(part => {
-            if (!current_node.hasOwnProperty(part)) {
-                current_node[part] = {
-                    label: part,
-                    nodes: {}
-                };
-            }
-            current_node = current_node[part].nodes;
-        })
-        console.log(tree);
-        return tree;
-    }, {});
-    console.log("treeData=", treeData);
-
-    const demo = {
-        'first-level-node-1': {               // key
-            label: 'Node 1 at the first level',
-            index: 0, // decide the rendering order on the same level
-            nodes: {
-                'second-level-node-1': {
-                label: 'Node 1 at the second level',
-                index: 0,
-                nodes: {
-                    'third-level-node-1': {
-                        label: 'Node 1 at the third level',
-                        index: 0,
-                        nodes: {} // you can remove the nodes property or leave it as an empty array
-                        },
-                    },
-                },
-            },
-        },
-        'first-level-node-2': {
-            label: 'Node 2 at the first level',
-            index: 1,
-        },
-    };
-
-    console.log(TreeMenu);
-    return <TreeMenu data={demo} />;
-    */
 
     const statsForPath = path => {
       const total = this.props.all.filter(
@@ -111,6 +61,19 @@ class Navigation extends React.Component {
     }, {});
     // console.log("treeData=", treeData);
 
+    // force there to be a root node if there isn't one
+    if (Object.keys(treeData).length > 1) {
+      treeData = {
+        'All Tests': {
+          label: 'All Tests',
+          parts: [],
+          path: '',
+          stats: statsForPath(''),
+          nodes: treeData
+        }
+      };
+    }
+
     const buttonFor = (node, depth) => {
       return <NavigationCard
         key={node.path}
@@ -118,14 +81,6 @@ class Navigation extends React.Component {
         navigateTo={this.props.navigateTo}
         depth={depth}
       />;
-      // return (
-      //   <button
-      //     key={node.path}
-      //     onClick={() => this.props.navigateTo(node.path)}
-      //   >
-      //     {node.label} ({node.stats.pass} pass/{node.stats.fail} fail/{node.stats.total} total)
-      //   </button>
-      // );
     };
 
     let depth = 0;
@@ -140,6 +95,8 @@ class Navigation extends React.Component {
       currentNode = node.nodes;
       depth++;
     }
+
+    // todo: if there is no hiearchy, don't display nav
 
     const subLabels = [];
     for (const key in currentNode) {
