@@ -18,7 +18,8 @@ export default class App extends React.Component {
     return (
       <StickyContainer>
         <Header />
-        <Navigation />
+        <Navigation mode="viewport" />
+        <Navigation mode="label" />
         <Wrapper>
           <List />
         </Wrapper>

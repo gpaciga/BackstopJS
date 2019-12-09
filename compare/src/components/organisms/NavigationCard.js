@@ -79,7 +79,7 @@ export default class NavigationCard extends React.Component {
         key={node.path}
         status={status}
         indentation={this.props.depth}
-        onClick={() => this.props.navigateTo(node.path)}
+        onClick={() => this.props.navigateTo(this.props.mode, node.path)}
       >
         <span className="label">{node.label}</span>
         <Stats>

@@ -12,9 +12,6 @@ const NavWrapper = styled.nav`
   box-sizing: border-box;
 `;
 
-const NAV_MODE = 'label';
-// const NAV_MODE = 'viewport';
-
 class Navigation extends React.Component {
   labelFilter (tests, label) {
     return tests.filter(
@@ -79,9 +76,9 @@ class Navigation extends React.Component {
 
   statsForPath (path) {
     let total;
-    if (NAV_MODE === 'label') {
+    if (this.props.mode === 'label') {
       total = this.labelFilter(this.props.all, path);
-    } else if (NAV_MODE === 'viewport') {
+    } else if (this.props.mode === 'viewport') {
       total = this.viewportFilter(this.props.all, path);
     }
 
@@ -101,10 +98,18 @@ class Navigation extends React.Component {
   }
 
   render () {
+    if (this.props.mode === 'label' && !this.props.settings.labelNav) {
+      return null;
+    }
+
+    if (this.props.mode === 'viewport' && !this.props.settings.viewportNav) {
+      return null;
+    }
+
     let treeData;
-    if (NAV_MODE === 'label') {
+    if (this.props.mode === 'label') {
       treeData = this.labelTree(this.props.tests);
-    } else if (NAV_MODE === 'viewport') {
+    } else if (this.props.mode === 'viewport') {
       treeData = this.viewportTree(this.props.tests);
     }
     // console.log("treeData=", treeData);
@@ -113,6 +118,7 @@ class Navigation extends React.Component {
       return <NavigationCard
         key={node.path}
         node={node}
+        mode={this.props.mode}
         navigateTo={this.props.navigateTo}
         depth={depth}
       />;
@@ -150,15 +156,16 @@ class Navigation extends React.Component {
 const mapStateToProps = state => {
   return {
     tests: state.tests.filtered,
-    all: state.tests.all
+    all: state.tests.all,
+    settings: state.layoutSettings
   };
 };
 
 const mapDispatchToProps = dispatch => {
   return {
-    navigateTo: path => {
-      console.log('navigating to', path);
-      dispatch(navigateTests(NAV_MODE, path));
+    navigateTo: (mode, path) => {
+      console.log('navigating to', mode, path);
+      dispatch(navigateTests(mode, path));
     }
   };
 };

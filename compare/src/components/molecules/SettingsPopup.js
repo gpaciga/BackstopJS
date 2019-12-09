@@ -99,6 +99,18 @@ class SettingsPopup extends React.Component {
           value={settings.diffImage}
           onToggle={this.onToggle.bind(this, 'diffImage')}
         />
+        <SettingOption
+          id="labelNav"
+          label="Label Filter"
+          value={settings.labelNav}
+          onToggle={this.onToggle.bind(this, 'labelNav')}
+        />
+        <SettingOption
+          id="viewportNav"
+          label="Viewport Filter"
+          value={settings.viewportNav}
+          onToggle={this.onToggle.bind(this, 'viewportNav')}
+        />
       </PopupWrapper>
     );
   }
