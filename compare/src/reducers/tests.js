@@ -42,18 +42,22 @@ const tests = (state = {}, action) => {
       }
       return state;
 
-    // this won't play well with other filters
     case 'NAVIGATE_TESTS':
-      if (action.mode === "label") {
-        return Object.assign({}, state, {
-          filtered: state.all.filter(e => e.pair.label.indexOf(action.path) === 0)
-        });
-      } else if (action.mode === "viewport") {
-        return Object.assign({}, state, {
-          filtered: state.all.filter(e => e.pair.viewportLabel.indexOf(action.path) === 0)
-        });
+      let filtered = state.all;
+
+      if (state.filterStatus !== 'all') {
+        filtered = filtered.filter(e => e.status === state.filterStatus);
       }
-      return state;
+
+      if (action.mode === 'label') {
+        filtered = filtered.filter(e => e.pair.label.indexOf(action.path) === 0);
+      } else if (action.mode === 'viewport') {
+        filtered = filtered.filter(e => e.pair.viewportLabel.indexOf(action.path) === 0);
+      }
+
+      return Object.assign({}, state, {
+        filtered: filtered
+      });
 
     default:
       return state;

@@ -79,9 +79,9 @@ class Navigation extends React.Component {
 
   statsForPath (path) {
     let total;
-    if (NAV_MODE === "label") {
+    if (NAV_MODE === 'label') {
       total = this.labelFilter(this.props.all, path);
-    } else if (NAV_MODE === "viewport") {
+    } else if (NAV_MODE === 'viewport') {
       total = this.viewportFilter(this.props.all, path);
     }
 
@@ -102,9 +102,9 @@ class Navigation extends React.Component {
 
   render () {
     let treeData;
-    if  (NAV_MODE === "label") {
+    if (NAV_MODE === 'label') {
       treeData = this.labelTree(this.props.tests);
-    } else if (NAV_MODE === "viewport") {
+    } else if (NAV_MODE === 'viewport') {
       treeData = this.viewportTree(this.props.tests);
     }
     // console.log("treeData=", treeData);
