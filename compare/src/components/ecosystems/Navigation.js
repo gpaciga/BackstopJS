@@ -38,8 +38,6 @@ class Navigation extends React.Component {
   buildTree (paths) {
     let treeData = paths.reduce((tree, path) => {
       const parts = path.split('/');
-      // console.log(parts);
-
       let currentNode = tree;
       parts.forEach((part, index) => {
         const leadingParts = parts.slice(0, index + 1);
@@ -56,7 +54,6 @@ class Navigation extends React.Component {
         }
         currentNode = currentNode[part].nodes;
       });
-      // console.log(tree);
       return tree;
     }, {});
 
@@ -83,11 +80,11 @@ class Navigation extends React.Component {
     }
 
     const pass = total.filter(
-      t => t.status === 'pass'
+      test => test.status === 'pass'
     );
 
     const fail = total.filter(
-      t => t.status === 'fail'
+      test => test.status === 'fail'
     );
 
     return {
@@ -112,7 +109,6 @@ class Navigation extends React.Component {
     } else if (this.props.mode === 'viewport') {
       treeData = this.viewportTree(this.props.tests);
     }
-    // console.log("treeData=", treeData);
 
     const buttonFor = (node, depth) => {
       return <NavigationCard
@@ -126,8 +122,8 @@ class Navigation extends React.Component {
 
     let depth = 0;
 
-    let breadcrumbs = [];
     // dive into the tree to get the first split
+    let breadcrumbs = [];
     let currentNode = treeData;
     while (Object.keys(currentNode).length === 1) {
       const key = Object.keys(currentNode)[0];
@@ -140,7 +136,6 @@ class Navigation extends React.Component {
     const subNodes = [];
     for (const key in currentNode) {
       const node = currentNode[key];
-      // console.log("parsing", node);
       subNodes.push(buttonFor(node, depth));
     }
 

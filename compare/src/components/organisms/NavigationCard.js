@@ -26,6 +26,7 @@ const StyledButton = styled.button`
     top: 0;
     left: 0;
   }
+
   @media print {
     box-shadow: none;
   }
