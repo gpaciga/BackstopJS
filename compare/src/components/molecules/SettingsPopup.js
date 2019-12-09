@@ -101,13 +101,13 @@ class SettingsPopup extends React.Component {
         />
         <SettingOption
           id="labelNav"
-          label="Label Filter"
+          label="Label filter"
           value={settings.labelNav}
           onToggle={this.onToggle.bind(this, 'labelNav')}
         />
         <SettingOption
           id="viewportNav"
-          label="Viewport Filter"
+          label="Viewport filter"
           value={settings.viewportNav}
           onToggle={this.onToggle.bind(this, 'viewportNav')}
         />
