@@ -36,7 +36,19 @@ class Navigation extends React.Component {
   }
 
   buildTree (paths) {
-    let treeData = paths.reduce((tree, path) => {
+    const nodes = {};
+    const treeData = {
+      'All Tests': {
+        label: `All test ${this.props.mode}s`,
+        parts: [],
+        path: '',
+        stats: this.statsForPath(''),
+        nodes: nodes
+      }
+    };
+
+    paths.reduce((tree, path) => {
+      console.log('parsing path', path);
       const parts = path.split('/');
       let currentNode = tree;
       parts.forEach((part, index) => {
@@ -55,18 +67,7 @@ class Navigation extends React.Component {
         currentNode = currentNode[part].nodes;
       });
       return tree;
-    }, {});
-
-    // enclose in a root node so we can always reset
-    treeData = {
-      'All Tests': {
-        label: 'All Tests',
-        parts: [],
-        path: '',
-        stats: this.statsForPath(''),
-        nodes: treeData
-      }
-    };
+    }, nodes);
 
     return treeData;
   }
