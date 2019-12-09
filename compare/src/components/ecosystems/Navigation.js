@@ -12,44 +12,47 @@ const NavWrapper = styled.nav`
   box-sizing: border-box;
 `;
 
+const NAV_MODE = 'label';
+// const NAV_MODE = 'viewport';
+
 class Navigation extends React.Component {
-  render () {
-    const labels = this.props.tests.map(test => test.pair.label);
+  labelFilter (tests, label) {
+    return tests.filter(
+      test => test.pair.label.indexOf(label) === 0
+    );
+  }
 
-    const statsForPath = path => {
-      const total = this.props.all.filter(
-        t => t.pair.label.indexOf(path) === 0
-      );
+  viewportFilter (tests, viewport) {
+    return tests.filter(
+      test => test.pair.viewportLabel.indexOf(viewport) === 0
+    );
+  }
 
-      const pass = total.filter(
-        t => t.status === 'pass'
-      );
+  labelTree (tests) {
+    const labels = tests.map(test => test.pair.label);
+    return this.buildTree(labels);
+  }
 
-      const fail = total.filter(
-        t => t.status === 'fail'
-      );
+  viewportTree (tests) {
+    const viewports = tests.map(test => test.pair.viewportLabel);
+    return this.buildTree(viewports);
+  }
 
-      return {
-        total: total.length,
-        pass: pass.length,
-        fail: fail.length
-      };
-    };
-
-    let treeData = labels.reduce((tree, label) => {
-      const parts = label.split('/');
+  buildTree (paths) {
+    let treeData = paths.reduce((tree, path) => {
+      const parts = path.split('/');
       // console.log(parts);
 
       let currentNode = tree;
       parts.forEach((part, index) => {
         const leadingParts = parts.slice(0, index + 1);
-        const path = leadingParts.join('/');
-        const stats = statsForPath(path);
+        const leadingPath = leadingParts.join('/');
+        const stats = this.statsForPath(leadingPath);
         if (!currentNode.hasOwnProperty(part)) {
           currentNode[part] = {
             label: part,
             parts: leadingParts,
-            path: path,
+            path: leadingPath,
             stats: stats,
             nodes: {}
           };
@@ -59,20 +62,52 @@ class Navigation extends React.Component {
       // console.log(tree);
       return tree;
     }, {});
-    // console.log("treeData=", treeData);
 
-    // force there to be a root node if there isn't one
-    if (Object.keys(treeData).length > 1) {
-      treeData = {
-        'All Tests': {
-          label: 'All Tests',
-          parts: [],
-          path: '',
-          stats: statsForPath(''),
-          nodes: treeData
-        }
-      };
+    // enclose in a root node so we can always reset
+    treeData = {
+      'All Tests': {
+        label: 'All Tests',
+        parts: [],
+        path: '',
+        stats: this.statsForPath(''),
+        nodes: treeData
+      }
+    };
+
+    return treeData;
+  }
+
+  statsForPath (path) {
+    let total;
+    if (NAV_MODE === "label") {
+      total = this.labelFilter(this.props.all, path);
+    } else if (NAV_MODE === "viewport") {
+      total = this.viewportFilter(this.props.all, path);
     }
+
+    const pass = total.filter(
+      t => t.status === 'pass'
+    );
+
+    const fail = total.filter(
+      t => t.status === 'fail'
+    );
+
+    return {
+      total: total.length,
+      pass: pass.length,
+      fail: fail.length
+    };
+  }
+
+  render () {
+    let treeData;
+    if  (NAV_MODE === "label") {
+      treeData = this.labelTree(this.props.tests);
+    } else if (NAV_MODE === "viewport") {
+      treeData = this.viewportTree(this.props.tests);
+    }
+    // console.log("treeData=", treeData);
 
     const buttonFor = (node, depth) => {
       return <NavigationCard
@@ -96,18 +131,17 @@ class Navigation extends React.Component {
       depth++;
     }
 
-    // todo: if there is no hiearchy, don't display nav
-
-    const subLabels = [];
+    const subNodes = [];
     for (const key in currentNode) {
       const node = currentNode[key];
       // console.log("parsing", node);
-      subLabels.push(buttonFor(node, depth));
+      subNodes.push(buttonFor(node, depth));
     }
+
     return (
       <NavWrapper>
         {breadcrumbs}
-        {subLabels}
+        {subNodes}
       </NavWrapper>
     );
   }
@@ -124,7 +158,7 @@ const mapDispatchToProps = dispatch => {
   return {
     navigateTo: path => {
       console.log('navigating to', path);
-      dispatch(navigateTests(path));
+      dispatch(navigateTests(NAV_MODE, path));
     }
   };
 };

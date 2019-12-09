@@ -12,9 +12,10 @@ export const findTests = value => {
   };
 };
 
-export const navigateTests = path => {
+export const navigateTests = (mode, path) => {
   return {
     type: 'NAVIGATE_TESTS',
+    mode,
     path
   };
 };
