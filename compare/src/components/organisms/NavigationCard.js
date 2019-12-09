@@ -2,8 +2,9 @@ import React from 'react';
 import styled from 'styled-components';
 
 import { colors, shadows } from '../../styles';
+import PassMeter from '../molecules/PassMeter';
 
-const StyledButton = styled.button`
+const NavButton = styled.button`
   position: relative;
   margin: 0px;
   margin-left: ${props => props.indentation * 25}px;
@@ -36,47 +37,12 @@ const Stats = styled.span`
     float: right;
 `;
 
-const PassMeter = styled.span`
-    height: 10px;
-    width: 150px;
-    margin: 0px 10px;
-    display: inline-block;
-`;
-
-const PassingFraction = styled.span`
-    display: inline-block;
-    height: 100%;
-    width: ${props => props.fraction * 100}%;
-    background-color: ${colors.green};
-`;
-
-const FailingFraction = styled.span`
-    display: inline-block;
-    height: 100%;
-    width: ${props => props.fraction * 100}%;
-    background-color: ${colors.red};
-`;
-
-class StatusBar extends React.Component {
-  render () {
-    const { pass, fail, total } = this.props.stats;
-    const failFraction = fail / total;
-    const passFraction = pass / total;
-    return (
-      <PassMeter>
-        <FailingFraction fraction={failFraction} />
-        <PassingFraction fraction={passFraction} />
-      </PassMeter>
-    );
-  }
-}
-
 export default class NavigationCard extends React.Component {
   render () {
     const node = this.props.node;
     const status = node.stats.fail === 0 ? 'pass' : 'fail';
     return (
-      <StyledButton
+      <NavButton
         key={node.path}
         status={status}
         indentation={this.props.depth}
@@ -84,10 +50,10 @@ export default class NavigationCard extends React.Component {
       >
         <span className="label">{node.label}</span>
         <Stats>
-          <span className="stats">{node.stats.pass} pass / {node.stats.fail} fail / {node.stats.total} total</span>
-          <StatusBar stats={node.stats} />
+          <span className="stats">{node.stats.fail} fail / {node.stats.pass} pass / {node.stats.total} total</span>
+          <PassMeter stats={node.stats} />
         </Stats>
-      </StyledButton>
+      </NavButton>
     );
   }
 }
