@@ -48,7 +48,6 @@ class Navigation extends React.Component {
     };
 
     paths.reduce((tree, path) => {
-      console.log('parsing path', path);
       const parts = path.split('/');
       let currentNode = tree;
       parts.forEach((part, index) => {
