@@ -1,0 +1,13 @@
+{
+  "scenarios": [
+    {
+      "label": "Simple",
+      "url": "https://garris.github.io/BackstopJS/index.html"
+    },
+    {
+      "label": "pkra bug test",
+      "url": "https://garris.github.io/BackstopJS/index.html",
+      "selectors": ["#pkratest", ".logoBlock"]
+    }
+  ]
+}

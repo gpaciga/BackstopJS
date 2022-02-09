@@ -7,6 +7,7 @@ const runPuppet = require('./runPuppet');
 const runPlaywright = require('./runPlaywright');
 
 const ensureDirectoryPath = require('./ensureDirectoryPath');
+const makeScenarios = require('./makeScenarios');
 const logger = require('./logger')('createBitmaps');
 
 const CONCURRENCY_DEFAULT = 10;
@@ -34,7 +35,7 @@ function decorateConfigForCapture (config, isReference) {
   } else {
     configJSON = Object.assign({}, require(config.backstopConfigFileName));
   }
-  configJSON.scenarios = configJSON.scenarios || [];
+  configJSON.scenarios = makeScenarios(configJSON);
   ensureViewportLabel(configJSON);
 
   const totalScenarioCount = configJSON.scenarios.length;
